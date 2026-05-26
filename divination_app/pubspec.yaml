@@ -38,6 +38,7 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_svg: ^2.0.10+1
   sensors_plus: ^6.1.1
+  camera: ^0.11.1
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +64,15 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/fonts/
+
+  fonts:
+    - family: SourceHanSerifSC
+      fonts:
+        - asset: assets/fonts/SourceHanSerifSC-SemiBold.otf
+          weight: 600
+        - asset: assets/fonts/SourceHanSerifSC-Bold.otf
+          weight: 700
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

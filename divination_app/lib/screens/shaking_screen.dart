@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:async';
 import '../widgets/cta_button.dart';
+import 'hexagram_result_screen.dart';
 
 class ShakingScreen extends StatefulWidget {
   final String objectDescription;
@@ -358,7 +359,16 @@ class _ShakingScreenState extends State<ShakingScreen>
         label: '查看卦象解析',
         width: double.infinity,
         onTap: () {
-          // TODO: navigate to result interpretation screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (_) => HexagramResultScreen(
+                    lines: List<int>.from(_lines),
+                    objectDescription: widget.objectDescription,
+                  ),
+            ),
+          );
         },
       ),
     );

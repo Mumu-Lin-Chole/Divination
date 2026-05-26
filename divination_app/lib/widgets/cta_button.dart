@@ -12,6 +12,7 @@ class CtaButton extends StatelessWidget {
     this.borderRadius = 28,
     this.showArrow = false,
     this.sparkles = false,
+    this.showShadow = true,
     this.textStyle,
   });
 
@@ -22,6 +23,7 @@ class CtaButton extends StatelessWidget {
   final double borderRadius;
   final bool showArrow;
   final bool sparkles;
+  final bool showShadow;
   final TextStyle? textStyle;
 
   @override
@@ -56,13 +58,15 @@ class CtaButton extends StatelessWidget {
                 stops: [0, 0.52, 1],
               ),
               borderRadius: BorderRadius.circular(borderRadius),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFC98933).withValues(alpha: 0.28),
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
-                ),
-              ],
+              boxShadow: showShadow
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFC98933).withValues(alpha: 0.28),
+                        blurRadius: 18,
+                        offset: const Offset(0, 10),
+                      ),
+                    ]
+                  : null,
             ),
             child: Stack(
               children: [

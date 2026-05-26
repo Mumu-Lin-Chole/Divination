@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+dart "$repo_root/divination_app/tool/commitlint.dart" --file "$1"

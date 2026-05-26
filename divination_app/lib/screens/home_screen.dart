@@ -3,6 +3,7 @@ import '../widgets/feature_card.dart';
 import '../widgets/analysis_banner.dart';
 import '../widgets/cta_button.dart';
 import 'find_object_screen.dart';
+import 'divination_text_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -135,8 +136,9 @@ class _HeroBanner extends StatelessWidget {
                         const Text(
                           '六爻卜卦',
                           style: TextStyle(
+                            fontFamily: 'SourceHanSerifSC',
                             fontSize: 24,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             color: Color(0xFF1A1A1A),
                             letterSpacing: 2,
                           ),
@@ -144,6 +146,7 @@ class _HeroBanner extends StatelessWidget {
                         Text(
                           '今日  ${_todayLabel()}  吉',
                           style: const TextStyle(
+                            fontFamily: 'SourceHanSerifSC',
                             fontSize: 10.5,
                             color: Color(0xFF7D8088),
                           ),
@@ -226,8 +229,9 @@ class _HeroBanner extends StatelessWidget {
                         const Text(
                           '寻物',
                           style: TextStyle(
+                            fontFamily: 'SourceHanSerifSC',
                             fontSize: 32,
-                            fontWeight: FontWeight.w900,
+                            fontWeight: FontWeight.w700,
                             color: Color(0xFF2E2E33),
                             letterSpacing: 1.5,
                             height: 1.2,
@@ -239,6 +243,7 @@ class _HeroBanner extends StatelessWidget {
                           child: Text(
                             '专业易学工具，寻找丢失的物品，获取方位与指引',
                             style: TextStyle(
+                              fontFamily: 'SourceHanSerifSC',
                               fontSize: 10.5,
                               color: Color(0xFF7D8088),
                               height: 1.5,
@@ -256,6 +261,7 @@ class _HeroBanner extends StatelessWidget {
                     showArrow: true,
                     sparkles: true,
                     textStyle: const TextStyle(
+                      fontFamily: 'SourceHanSerifSC',
                       color: Colors.white,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -356,6 +362,7 @@ class _FeatureGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -371,6 +378,15 @@ class _FeatureGrid extends StatelessWidget {
           description: f['desc']!,
           tag: f['tag']!,
           imagePath: f['img']!,
+          onTap:
+              index == 0
+                  ? () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const DivinationTextScreen(),
+                    ),
+                  )
+                  : null,
         );
       },
     );

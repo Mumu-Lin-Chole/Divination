@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../widgets/cta_button.dart';
 import '../widgets/permission_dialog.dart';
 import 'shaking_screen.dart';
+import 'camera_screen.dart';
 
 class FindObjectScreen extends StatefulWidget {
   const FindObjectScreen({super.key});
@@ -13,28 +14,54 @@ class FindObjectScreen extends StatefulWidget {
   State<FindObjectScreen> createState() => _FindObjectScreenState();
 }
 
-class _FindObjectScreenState extends State<FindObjectScreen> {
+class _FindObjectScreenState extends State<FindObjectScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _textController = TextEditingController();
   bool _isListening = false;
   XFile? _pickedImage;
+  late final AnimationController _bounceController;
+  late final Animation<double> _bounceAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _bounceController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    );
+    _bounceAnimation = Tween<double>(begin: 0, end: 6).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
+    );
+    _bounceController.repeat(reverse: true);
+  }
 
   @override
   void dispose() {
     _textController.dispose();
+    _bounceController.dispose();
     super.dispose();
   }
 
   Future<void> _handleCamera() async {
-    final status = await Permission.camera.status;
-    if (status.isDenied || status.isPermanentlyDenied) {
-      if (mounted) await PermissionDialog.showCameraPermission(context);
-      return;
-    }
-    final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.camera);
-    if (image != null && mounted) {
-      setState(() => _pickedImage = image);
-    }
+    // final status = await Permission.camera.status;
+
+    // if (!mounted) return;
+    // if (status.isDenied || status.isPermanentlyDenied) {
+    //   await PermissionDialog.showCameraPermission(context);
+    //   return;
+    // }
+    // final imagePath = await Navigator.push<String>(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => const CameraScreen()),
+    // );
+    // if (imagePath != null && mounted) {
+    //   setState(() => _pickedImage = XFile(imagePath));
+    // }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CameraScreen()),
+    );
   }
 
   Future<void> _handleVoice() async {
@@ -67,18 +94,31 @@ class _FindObjectScreenState extends State<FindObjectScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF6),
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: CtaButtonBar(
-        child: CtaButton(
-          label: '开始摇卦',
-          width: double.infinity,
-          height: 48,
-          borderRadius: 24,
-          onTap: _startDivination,
-          textStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 1.1,
+      extendBody: true,
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildHint(),
+              const SizedBox(height: 8),
+              CtaButton(
+                label: '开始摇卦',
+                width: double.infinity,
+                height: 48,
+                borderRadius: 24,
+                showShadow: false,
+                onTap: _startDivination,
+                textStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -87,39 +127,19 @@ class _FindObjectScreenState extends State<FindObjectScreen> {
           const Positioned.fill(child: _FindObjectBackground()),
           SafeArea(
             bottom: false,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 18,
-                  ),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: constraints.maxHeight,
-                    ),
-                    child: IntrinsicHeight(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Column(
-                          children: [
-                            _buildNavBar(context),
-                            const SizedBox(height: 6),
-                            _buildSubtitle(),
-                            const SizedBox(height: 20),
-                            _buildOracleVisual(),
-                            const SizedBox(height: 24),
-                            _buildInputCard(),
-                            const Spacer(),
-                            _buildHint(),
-                            const SizedBox(height: 16),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  _buildNavBar(context),
+                  const SizedBox(height: 6),
+                  _buildSubtitle(),
+                  const SizedBox(height: 20),
+                  _buildOracleVisual(),
+                  const SizedBox(height: 24),
+                  _buildInputCard(),
+                ],
+              ),
             ),
           ),
         ],
@@ -418,20 +438,32 @@ class _FindObjectScreenState extends State<FindObjectScreen> {
   }
 
   Widget _buildHint() {
-    return const Column(
-      children: [
-        Text(
-          '认真默念心中所想，而后点击起爻',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 12, height: 1.4, color: Color(0xFFB87821)),
-        ),
-        SizedBox(height: 2),
-        Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: Color(0xFFB87821),
-          size: 20,
-        ),
-      ],
+    return AnimatedBuilder(
+      animation: _bounceAnimation,
+      builder: (context, child) {
+        return Column(
+          children: [
+            const Text(
+              '认真默念心中所想，而后点击起爻',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.4,
+                color: Color(0xFFB87821),
+              ),
+            ),
+            const SizedBox(height: 4),
+            Transform.translate(
+              offset: Offset(0, _bounceAnimation.value),
+              child: const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Color(0xFFB87821),
+                size: 16,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

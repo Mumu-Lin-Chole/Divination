@@ -7,16 +7,18 @@ class FeatureCard extends StatelessWidget {
     required this.description,
     required this.tag,
     required this.imagePath,
+    this.onTap,
   });
 
   final String title;
   final String description;
   final String tag;
   final String imagePath;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final card = Container(
       height: 104,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -80,6 +82,10 @@ class FeatureCard extends StatelessWidget {
         ],
       ),
     );
+    if (onTap != null) {
+      return GestureDetector(onTap: onTap, child: card);
+    }
+    return card;
   }
 }
 
